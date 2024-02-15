@@ -1,0 +1,19 @@
+{
+  "name": "Fleeting Notes",
+  "short_name": "Fleeting Notes",
+  "icons": [
+    {
+      "src": "/favicons/196.png",
+      "sizes": "196x196",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicons/512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "display": "standalone"
+}

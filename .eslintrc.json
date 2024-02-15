@@ -1,0 +1,12 @@
+// {
+//   "extends": "next/core-web-vitals"
+// }
+{
+  "extends": "react-app",
+  "parserOptions": {
+    "ecmaVersion": 2021
+  },
+  "rules": {
+    // Your ESLint rules here
+  }
+}
