@@ -1,9 +1,11 @@
+import { Viewport } from "./Viewport";
 import { Graph } from "./math/graph";
 import { getNearestPoint } from "./math/utils";
 import { Point } from "./primitives/point";
 import { Segment } from "./primitives/segment";
 
 export class GraphEditor {
+    viewport: Viewport;
     canvas: HTMLCanvasElement;
     graph: Graph;
     ctx: CanvasRenderingContext2D;
@@ -12,8 +14,9 @@ export class GraphEditor {
     dragging: boolean;
     mouse: Point;
 
-    constructor(canvas, graph) {
-        this.canvas = canvas;
+    constructor(viewport: Viewport, graph: Graph) {
+        this.viewport = viewport;
+        this.canvas = viewport.canvas;
         this.graph = graph;
 
         this.ctx = this.canvas.getContext("2d");
@@ -25,6 +28,7 @@ export class GraphEditor {
 
         this.addEventListeners();
     }
+
     private addEventListeners() {
         this.canvas.addEventListener('mousedown', this.handleMouseDown.bind(this))
         this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this))
@@ -32,15 +36,15 @@ export class GraphEditor {
         this.canvas.addEventListener("mouseup", () => this.dragging = false)
     }
 
-    private handleMouseMove(evt) {
-        this.mouse = new Point(evt.offsetX, evt.offsetY);
-        this.hovered = getNearestPoint(this.mouse, this.graph.points, 10);
+    private handleMouseMove(evt: MouseEvent) {
+        this.mouse = this.viewport.getMouse(evt, true);
+        this.hovered = getNearestPoint(this.mouse, this.graph.points, 10 * this.viewport.zoom);
         if (this.dragging == true) {
             this.selected.x = this.mouse.x;
             this.selected.y = this.mouse.y;
         }
     }
-    private handleMouseDown(evt) {
+    private handleMouseDown(evt: MouseEvent) {
         if (evt.button == 2) { // right click
             if (this.selected) {
                 this.selected = null;
@@ -73,6 +77,12 @@ export class GraphEditor {
         if (this.selected == point) {
             this.selected = null;
         }
+    }
+
+    dispose() {
+        this.graph.dispose();
+        this.selected = null;
+        this.hovered = null;
     }
 
     display() {
