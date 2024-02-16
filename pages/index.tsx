@@ -31,11 +31,15 @@ export default function Home() {
     setGraph(graph);
     setGraphEditor(graphEditor);
 
+    let oldGraphHash = graph.hash();
     animate();
 
     function animate() {
       viewport.reset();
-      world.generate();
+      if (graph.hash() != oldGraphHash) {
+        world.generate();
+        oldGraphHash = graph.hash();
+      }
       world.draw(ctx);
       ctx.globalAlpha = 0.2;
       graphEditor.display();
