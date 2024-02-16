@@ -1,4 +1,4 @@
-import { Viewport } from "./Viewport";
+import { Viewport } from "./viewport";
 import { Graph } from "./math/graph";
 import { getNearestPoint } from "./math/utils";
 import { Point } from "./primitives/point";
@@ -92,7 +92,7 @@ export class GraphEditor {
         }
         if (this.selected) {
             const intent = this.hovered ? this.hovered : this.mouse;
-            new Segment(this.selected, this.mouse).draw(this.ctx, { dash: [3, 3] });
+            new Segment(this.selected, intent).draw(this.ctx, { dash: [3, 3] });
             this.selected.draw(this.ctx, { outline: true });
         }
     }

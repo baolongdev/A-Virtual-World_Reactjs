@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Graph } from "../scripts/math/graph";
-import { Point } from "../scripts/primitives/point";
-import { Segment } from "../scripts/primitives/segment";
 import { Button } from "@geist-ui/core";
-import { GraphEditor } from "../scripts/GraphEditor";
-import { Viewport } from "../scripts/Viewport";
-import { Polygon } from "../scripts/Polygon";
+import { GraphEditor } from "../scripts/graphEditor";
+import { Viewport } from "../scripts/viewport";
+import { World } from "../scripts/world";
 
 export default function Home() {
   const canvasRef = useRef(null);
@@ -16,14 +14,16 @@ export default function Home() {
   useEffect(() => {
     const canvas = canvasRef.current as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
-    canvas.width = 500;
-    canvas.height = 500;
+    canvas.width = 600;
+    canvas.height = 600;
 
     const graphString = localStorage.getItem('graph');
     const graphInfo = graphString ? JSON.parse(graphString) : null;
     const graph = graphInfo
       ? Graph.load(graphInfo)
       : new Graph();
+    const world = new World(graph);
+
     const viewport = new Viewport(canvas);
     const graphEditor = new GraphEditor(viewport, graph);
 
@@ -35,9 +35,10 @@ export default function Home() {
 
     function animate() {
       viewport.reset();
+      world.generate();
+      world.draw(ctx);
+      ctx.globalAlpha = 0.2;
       graphEditor.display();
-      // new Polygon(graph.points).draw(ctx);
-      new Envelope(graph.segments[0], 80).draw(ctx);
       requestAnimationFrame(animate);
     }
   }, [])
