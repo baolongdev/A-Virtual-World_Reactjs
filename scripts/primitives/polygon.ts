@@ -1,5 +1,7 @@
-import { getIntersection, average, getRandomColor } from "../math";
-import { Point, Segment } from ".";
+import { getIntersection, average, getRandomColor } from "../math/utils";
+import { Point } from "./point";
+import { Segment } from "./segment";
+
 
 export class Polygon {
     points: Point[]
@@ -14,6 +16,12 @@ export class Polygon {
                 new Segment(points[i - 1], points[i % points.length])
             );
         }
+    }
+
+    static load(info: Polygon) {
+        return new Polygon(
+            info.points.map((i) => new Point(i.x, i.y))
+        );
     }
 
     static union(polys: Polygon[]) {

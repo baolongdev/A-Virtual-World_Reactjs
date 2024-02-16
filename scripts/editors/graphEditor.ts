@@ -1,6 +1,9 @@
+import { Graph } from "../math/graph";
+import { getNearestPoint } from "../math/utils";
+import { Point } from "../primitives/point";
+import { Segment } from "../primitives/segment";
 import { Viewport } from "../viewport";
-import { Graph, getNearestPoint } from "../math";
-import { Point, Segment } from "../primitives";
+
 
 export class GraphEditor {
     viewport: Viewport;

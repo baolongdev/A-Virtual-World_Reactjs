@@ -1,6 +1,9 @@
-import { Stop } from "../markings";
-import { getNearestSegment } from "../math";
-import { Point, Polygon, Segment } from "../primitives";
+import { Marking } from "../markings/marking";
+import { Stop } from "../markings/stop";
+import { getNearestSegment } from "../math/utils";
+import { Point } from "../primitives/point";
+import { Polygon } from "../primitives/polygon";
+import { Segment } from "../primitives/segment";
 import { Viewport } from "../viewport";
 import { World } from "../world";
 
@@ -12,7 +15,7 @@ export class MarkingEditor {
     dragging: boolean;
     mouse: Point;
     intent: Stop;
-    markings: Stop[];
+    markings: Marking[];
     targetSegments: Segment[]
 
     boundMouseDown: (evt: MouseEvent) => void;

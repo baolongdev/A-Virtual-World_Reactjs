@@ -1,8 +1,9 @@
-import { Start } from "../markings";
-import { Point } from "../primitives";
+import { Start } from "../markings/start";
+import { Point } from "../primitives/point";
 import { Viewport } from "../viewport";
 import { World } from "../world";
-import { MarkingEditor } from ".";
+import { MarkingEditor } from "./markingEditor";
+
 
 
 export class StartEditor extends MarkingEditor {

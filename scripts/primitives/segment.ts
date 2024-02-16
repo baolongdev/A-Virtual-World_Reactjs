@@ -1,5 +1,6 @@
-import { add, distance, dot, magnitude, normalize, scale, subtract } from "../math";
-import { Point } from ".";
+import { add, distance, dot, magnitude, normalize, scale, subtract } from "../math/utils";
+import { Point } from "./point";
+
 
 export class Segment {
     p1: Point;

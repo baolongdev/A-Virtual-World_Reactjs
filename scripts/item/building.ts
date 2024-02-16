@@ -1,5 +1,6 @@
-import { average, getFake3dPoint } from "../math";
-import { Polygon } from "../primitives";
+import { average, getFake3dPoint } from "../math/utils";
+import { Polygon } from "../primitives/polygon";
+
 
 export class Building {
     base: Polygon
@@ -7,6 +8,9 @@ export class Building {
     constructor(poly: Polygon, height = 200) {
         this.base = poly;
         this.height = height;
+    }
+    static load(info: Building) {
+        return new Building(Polygon.load(info.base), info.height);
     }
 
     draw(ctx, viewPoint) {

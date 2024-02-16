@@ -1,5 +1,5 @@
-import { Light } from "../markings";
-import { MarkingEditor } from ".";
+import { Light } from "../markings/light";
+import { MarkingEditor } from "./markingEditor";
 
 export class LightEditor extends MarkingEditor {
     constructor(viewport, world) {

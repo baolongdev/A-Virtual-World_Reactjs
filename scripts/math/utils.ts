@@ -1,4 +1,5 @@
-import { Point, Segment } from "../primitives";
+import { Point } from "../primitives/point";
+import { Segment } from "../primitives/segment";
 
 export function getNearestPoint(loc: Point, points: Point[], threshold = Number.MAX_SAFE_INTEGER) {
     let minDist = Number.MAX_SAFE_INTEGER;

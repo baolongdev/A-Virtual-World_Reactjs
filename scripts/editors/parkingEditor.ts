@@ -1,8 +1,9 @@
-import { Parking } from "../markings";
-import { Point } from "../primitives";
+import { Parking } from "../markings/parking";
+import { Point } from "../primitives/point";
 import { Viewport } from "../viewport";
 import { World } from "../world";
-import { MarkingEditor } from ".";
+import { MarkingEditor } from "./markingEditor";
+
 
 export class ParkingEditor extends MarkingEditor {
     constructor(viewport: Viewport, world: World) {

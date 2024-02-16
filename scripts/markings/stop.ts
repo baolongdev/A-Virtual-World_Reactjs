@@ -1,8 +1,5 @@
-import { circularProgress } from "@nextui-org/react";
-import { angle, translate } from "../math/utils";
-import { Envelope } from "../primitives/envelope";
+import { angle } from "../math/utils";
 import { Point } from "../primitives/point";
-import { Polygon, Segment } from "../primitives";
 import { Marking } from "./marking";
 
 export class Stop extends Marking {
@@ -10,6 +7,7 @@ export class Stop extends Marking {
         super(center, directionVector, width, height);
 
         this.border = this.poly.segments[2];
+        this.type = "stop";
     }
 
     draw(ctx: CanvasRenderingContext2D) {

@@ -1,5 +1,5 @@
-import { angle } from "../math";
-import { Marking } from ".";
+import { angle } from "../math/utils";
+import { Marking } from "./marking";
 
 export class Start extends Marking {
     constructor(center, directionVector, width, height) {
@@ -7,6 +7,7 @@ export class Start extends Marking {
 
         this.img = new Image();
         this.img.src = "car.png";
+        this.type = "start";
     }
 
     draw(ctx) {

@@ -1,12 +1,13 @@
+import { Marking } from "./markings/marking";
 import { Building } from "./item/building";
 import { Tree } from "./item/tree";
-import { Stop } from "./markings/stop";
 import { Graph } from "./math/graph";
 import { add, distance, lerp, scale } from "./math/utils";
 import { Envelope } from "./primitives/envelope";
 import { Point } from "./primitives/point";
 import { Polygon } from "./primitives/polygon";
 import { Segment } from "./primitives/segment";
+import { load } from "./markings/load";
 
 export class World {
     graph: Graph
@@ -22,7 +23,9 @@ export class World {
     trees: Tree[]
     treeSize: number
     laneGuides: Segment[]
-    markings: Stop[]
+    markings: Marking[]
+    zoom: number
+    offset: Point
 
     constructor(
         graph: Graph,
@@ -50,6 +53,27 @@ export class World {
         this.markings = [];
 
         this.generate();
+    }
+
+    static load(info: World) {
+        const world = new World(new Graph());
+        world.graph = Graph.load(info.graph);
+        world.roadWidth = info.roadWidth;
+        world.roadRoundness = info.roadRoundness;
+        world.buildingWidth = info.buildingWidth;
+        world.buildingMinLength = info.buildingMinLength;
+        world.spacing = info.spacing;
+        world.treeSize = info.treeSize;
+        world.envelopes = info.envelopes.map((e) => Envelope.load(e));
+        world.roadBorders = info.roadBorders.map((b) => new Segment(b.p1, b.p2));
+        world.buildings = info.buildings.map((e) => Building.load(e));
+        world.trees = info.trees.map((t) => new Tree(t.center, info.treeSize));
+        world.laneGuides = info.laneGuides.map((g) => new Segment(g.p1, g.p2));
+        world.markings = info.markings.map((m) => load(m));
+        world.zoom = info.zoom;
+        world.offset = info.offset;
+
+        return world;
     }
 
     generate() {

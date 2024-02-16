@@ -1,6 +1,6 @@
-import { perpendicular, add, scale, lerp2D } from "../math";
-import { Segment } from "../primitives";
-import { Marking } from ".";
+import { Marking } from "./marking";
+import { perpendicular, add, scale, lerp2D } from "../math/utils";
+import { Segment } from "../primitives/segment";
 
 
 export class Light extends Marking {
@@ -9,6 +9,7 @@ export class Light extends Marking {
 
         this.state = "off";
         this.border = this.poly.segments[0];
+        this.type = "light";
     }
 
     draw(ctx) {

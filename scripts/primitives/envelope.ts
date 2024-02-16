@@ -1,5 +1,8 @@
-import { Polygon, Segment } from ".";
-import { angle, subtract, translate } from "../math";
+
+
+import { angle, subtract, translate } from "../math/utils";
+import { Polygon } from "./polygon";
+import { Segment } from "./segment";
 
 
 
@@ -7,9 +10,18 @@ export class Envelope {
     skeleton: Segment
     poly: Polygon
 
-    constructor(skeleton: Segment, width: number, roundness = 1) {
-        this.skeleton = skeleton;
-        this.poly = this.generatePolygon(width, roundness);
+    constructor(skeleton?: Segment, width?: number, roundness = 1) {
+        if (skeleton) {
+            this.skeleton = skeleton;
+            this.poly = this.generatePolygon(width, roundness);
+        }
+    }
+
+    static load(info: Envelope) {
+        const env = new Envelope();
+        env.skeleton = new Segment(info.skeleton.p1, info.skeleton.p2);
+        env.poly = Polygon.load(info.poly);
+        return env;
     }
 
     private generatePolygon(width, roundness) {

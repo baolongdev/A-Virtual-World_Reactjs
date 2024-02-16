@@ -1,7 +1,5 @@
-import { Point, Segment } from "../primitives";
-
-
-
+import { Point } from "../primitives/point";
+import { Segment } from "../primitives/segment";
 export class Graph {
     points: Point[];
     segments: Segment[];

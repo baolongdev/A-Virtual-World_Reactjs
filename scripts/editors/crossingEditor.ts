@@ -1,8 +1,8 @@
-import { Crossing } from "../markings";
-import { Point } from "../primitives";
+import { Point } from "../primitives/point";
 import { Viewport } from "../viewport";
 import { World } from "../world";
-import { MarkingEditor } from ".";
+import { MarkingEditor } from "./markingEditor";
+import { Crossing } from "../markings/crossing";
 
 
 

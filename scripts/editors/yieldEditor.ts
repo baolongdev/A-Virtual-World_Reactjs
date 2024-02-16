@@ -1,8 +1,8 @@
-import { Yield } from "../markings";
-import { Point } from "../primitives";
+import { Yield } from "../markings/yield";
+import { Point } from "../primitives/point";
 import { Viewport } from "../viewport";
 import { World } from "../world";
-import { MarkingEditor } from ".";
+import { MarkingEditor } from "./markingEditor";
 
 export class YieldEditor extends MarkingEditor {
     constructor(viewport: Viewport, world: World) {
