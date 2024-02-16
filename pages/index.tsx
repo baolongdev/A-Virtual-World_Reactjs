@@ -4,6 +4,7 @@ import { Button } from "@geist-ui/core";
 import { GraphEditor } from "../scripts/graphEditor";
 import { Viewport } from "../scripts/viewport";
 import { World } from "../scripts/world";
+import { scale } from "../scripts/math/utils";
 
 export default function Home() {
   const canvasRef = useRef(null);
@@ -40,7 +41,8 @@ export default function Home() {
         world.generate();
         oldGraphHash = graph.hash();
       }
-      world.draw(ctx);
+      const viewPoint = scale(viewport.getOffset(), -1);
+      world.draw(ctx, viewPoint);
       ctx.globalAlpha = 0.2;
       graphEditor.display();
       requestAnimationFrame(animate);

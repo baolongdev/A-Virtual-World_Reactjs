@@ -81,6 +81,10 @@ export function lerp(a: number, b: number, t: number) {
     return a + (b - a) * t;
 }
 
+export function lerp2D(A: Point, B: Point, t: number) {
+    return new Point(lerp(A.x, B.x, t), lerp(A.y, B.y, t));
+}
+
 export function getRandomColor() {
     const hue = 290 + Math.random() * 260;
     return "hsl(" + hue + ",100%, 60%)";
