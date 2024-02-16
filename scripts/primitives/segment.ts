@@ -1,5 +1,5 @@
-import { add, distance, dot, magnitude, normalize, scale, subtract } from "../math/utils";
-import { Point } from "./point";
+import { add, distance, dot, magnitude, normalize, scale, subtract } from "../math";
+import { Point } from ".";
 
 export class Segment {
     p1: Point;
@@ -26,7 +26,7 @@ export class Segment {
         return this.p1.equals(point) || this.p2.equals(point);
     }
 
-    distanceToPoint(point) {
+    distanceToPoint(point: Point) {
         const proj = this.projectPoint(point);
         if (proj.offset > 0 && proj.offset < 1) {
             return distance(point, proj.point);
@@ -36,7 +36,7 @@ export class Segment {
         return Math.min(distToP1, distToP2);
     }
 
-    projectPoint(point) {
+    projectPoint(point: Point) {
         const a = subtract(point, this.p1);
         const b = subtract(this.p2, this.p1);
         const normB = normalize(b);
@@ -48,10 +48,11 @@ export class Segment {
         return proj;
     }
 
-    draw(ctx: CanvasRenderingContext2D, { width = 2, color = "black", dash = [] }: { width?: number, color?: string, dash?: number[] } = {}) {
+    draw(ctx: CanvasRenderingContext2D, { width = 2, color = "black", dash = [], cap = "butt" }: { width?: number, color?: string, dash?: number[], cap?: CanvasLineCap } = {}) {
         ctx.beginPath();
         ctx.lineWidth = width;
         ctx.strokeStyle = color;
+        ctx.lineCap = cap;
         ctx.setLineDash(dash);
         ctx.moveTo(this.p1.x, this.p1.y);
         ctx.lineTo(this.p2.x, this.p2.y);

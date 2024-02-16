@@ -1,10 +1,10 @@
-import { average, getIntersection, getRandomColor } from "../math/utils"
-import { Point } from "./point"
-import { Segment } from "./segment"
+import { getIntersection, average, getRandomColor } from "../math";
+import { Point, Segment } from ".";
 
 export class Polygon {
     points: Point[]
     segments: Segment[]
+
     constructor(points: Point[]) {
         this.points = points
         this.segments = []
@@ -86,12 +86,12 @@ export class Polygon {
         return false;
     }
 
-    containsSegment(seg) {
+    containsSegment(seg: Segment) {
         const midpoint = average(seg.p1, seg.p2);
         return this.containsPoint(midpoint);
     }
 
-    containsPoint(point) {
+    containsPoint(point: Point) {
         const outerPoint = new Point(-1000, -1000);
         let intersectionCount = 0;
         for (const seg of this.segments) {
@@ -103,17 +103,18 @@ export class Polygon {
         return intersectionCount % 2 == 1;
     }
 
-    drawSegments(ctx) {
+    drawSegments(ctx: CanvasRenderingContext2D) {
         for (const seg of this.segments) {
             seg.draw(ctx, { color: getRandomColor(), width: 5 });
         }
     }
 
-    draw(ctx: CanvasRenderingContext2D, { stroke = "blue", lineWidth = 2, fill = "rgba(0,0,255,0.3" }: { stroke?: string, lineWidth?: number, fill?: string } = {}) {
+    draw(ctx: CanvasRenderingContext2D, { stroke = "blue", lineWidth = 2, fill = "rgba(0,0,255,0.3", join = "miter" }: { stroke?: string, lineWidth?: number, fill?: string, join?: CanvasLineJoin } = {}) {
         ctx.beginPath();
         ctx.fillStyle = fill;
         ctx.strokeStyle = stroke;
         ctx.lineWidth = lineWidth;
+        ctx.lineJoin = join;
         ctx.moveTo(this.points[0].x, this.points[0].y);
         for (let i = 1; i < this.points.length; i++) {
             ctx.lineTo(this.points[i].x, this.points[i].y);

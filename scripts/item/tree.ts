@@ -1,18 +1,16 @@
-import { add, lerp, lerp2D, scale, subtract, translate } from "../math/utils";
-import { Point } from "../primitives/point";
-import { Polygon } from "../primitives/polygon";
-import { Segment } from "../primitives/segment";
+import { add, getFake3dPoint, lerp, lerp2D, scale, subtract, translate } from "../math";
+import { Point, Polygon } from "../primitives";
 
 export class Tree {
     center: Point
     size: number
-    heightCoef: number
+    height: number
     base: Polygon
 
-    constructor(center: Point, size: number, heightCoef: number = 0.3) {
+    constructor(center: Point, size: number, height: number = 200) {
         this.center = center;
         this.size = size; //size of the base
-        this.heightCoef = heightCoef;
+        this.height = height;
         this.base = this.generateLevel(center, size)
     }
 
@@ -28,8 +26,7 @@ export class Tree {
     }
 
     draw(ctx, viewPoint) {
-        const diff = subtract(this.center, viewPoint);
-        const top = add(this.center, scale(diff, this.heightCoef));
+        const top = getFake3dPoint(this.center, viewPoint, this.height);
 
         const levelCount = 7;
         for (let level = 0; level < levelCount; level++) {

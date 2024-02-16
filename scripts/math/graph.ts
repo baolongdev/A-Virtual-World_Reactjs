@@ -1,5 +1,5 @@
-import { Point } from "../primitives/point";
-import { Segment } from "../primitives/segment";
+import { Point, Segment } from "../primitives";
+
 
 
 export class Graph {

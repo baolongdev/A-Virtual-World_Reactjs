@@ -1,5 +1,6 @@
-import { Building } from "./items/building";
-import { Tree } from "./items/tree";
+import { Building } from "./item/building";
+import { Tree } from "./item/tree";
+import { Stop } from "./markings/stop";
 import { Graph } from "./math/graph";
 import { add, distance, lerp, scale } from "./math/utils";
 import { Envelope } from "./primitives/envelope";
@@ -20,6 +21,8 @@ export class World {
     buildings: Building[]
     trees: Tree[]
     treeSize: number
+    laneGuides: Segment[]
+    markings: Stop[]
 
     constructor(
         graph: Graph,
@@ -42,6 +45,9 @@ export class World {
         this.roadBorders = [];
         this.buildings = [];
         this.trees = [];
+        this.laneGuides = [];
+
+        this.markings = [];
 
         this.generate();
     }
@@ -57,13 +63,30 @@ export class World {
         this.roadBorders = Polygon.union(this.envelopes.map((e) => e.poly));
         this.buildings = this.generateBuildings();
         this.trees = this.generateTrees();
+        this.laneGuides.length = 0;
+        this.laneGuides.push(...this.generateLaneGuides());
+    }
+
+    private generateLaneGuides() {
+        const tmpEnvelopes: Envelope[] = [];
+        for (const seg of this.graph.segments) {
+            tmpEnvelopes.push(
+                new Envelope(
+                    seg,
+                    this.roadWidth / 2,
+                    this.roadRoundness
+                )
+            )
+        }
+        const segments = Polygon.union(tmpEnvelopes.map((e) => e.poly));
+        return segments;
     }
 
     private generateTrees() {
         const points = [
             ...this.roadBorders.map((s) => [s.p1, s.p2]).flat(),
             ...this.buildings.map((b) => b.base.points).flat()
-        ]
+        ];
         const left = Math.min(...points.map((p) => p.x));
         const right = Math.max(...points.map((p) => p.x));
         const top = Math.min(...points.map((p) => p.y));
@@ -184,9 +207,12 @@ export class World {
         return bases.map((b) => new Building(b));
     }
 
-    draw(ctx, viewPoint) {
+    draw(ctx: CanvasRenderingContext2D, viewPoint: Point) {
         for (const env of this.envelopes) {
             env.draw(ctx, { fill: "#BBB", stroke: "#BBB", lineWidth: 15 });
+        }
+        for (const marking of this.markings) {
+            marking.draw(ctx);
         }
         for (const seg of this.graph.segments) {
             seg.draw(ctx, { color: "white", width: 4, dash: [10, 10] });
@@ -198,7 +224,8 @@ export class World {
         const items: (Tree | Building)[] = [...this.buildings, ...this.trees];
         items.sort(
             (a, b) =>
-                b.base.distanceToPoint(viewPoint) - a.base.distanceToPoint(viewPoint)
+                b.base.distanceToPoint(viewPoint) -
+                a.base.distanceToPoint(viewPoint)
         )
         for (const item of items) {
             item.draw(ctx, viewPoint);

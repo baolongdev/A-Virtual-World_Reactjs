@@ -57,7 +57,7 @@ export class Viewport {
     }
 
     private handleMouseDown(evt: MouseEvent) {
-        if (evt.button === 2 && evt.ctrlKey) { // Ctrl + right button
+        if (evt.button === 2 && evt.ctrlKey) { //! Ctrl + right button
             this.drag.start = this.getMouse(evt);
             this.drag.active = true;
         }
