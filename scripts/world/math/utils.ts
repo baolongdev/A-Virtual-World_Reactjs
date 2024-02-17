@@ -1,4 +1,5 @@
 import { Point, Segment } from "../primitives";
+//! Done
 
 export function getNearestPoint(loc: Point, points: Point[], threshold = Number.MAX_SAFE_INTEGER) {
     let minDist = Number.MAX_SAFE_INTEGER;
@@ -26,6 +27,18 @@ export function getNearestSegment(loc: Point, segments: Segment[], threshold = N
     return nearest;
 }
 
+export function getNearestSegments(loc: Point, segments: Segment[], threshold = Number.MAX_SAFE_INTEGER) {
+    let nearest = [];
+    for (const seg of segments) {
+        const dist = seg.distanceToPoint(loc);
+        if (dist < threshold) {
+            nearest.push(seg);
+        }
+    }
+    nearest.sort((a, b) => a.distanceToPoint(loc) - b.distanceToPoint(loc));
+    return nearest;
+}
+
 export function distance(p1: Point, p2: Point) {
     return Math.hypot(p1.x - p2.x, p1.y - p2.y);
 }
@@ -34,8 +47,13 @@ export function average(p1: Point, p2: Point) {
     return new Point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
 }
 
-export function dot(p1, p2) {
+export function dot(p1: Point, p2: Point) {
     return p1.x * p2.x + p1.y * p2.y;
+}
+
+//new
+export function cross(p1: Point, p2: Point) {
+    return p1.x * p2.y - p1.y * p2.x;
 }
 
 export function add(p1: Point, p2: Point) {
@@ -104,7 +122,7 @@ export function invLerp(a: number, b: number, v: number) {
     return (v - a) / (b - a);
 }
 
-export function degToRad(degree) {
+export function degToRad(degree: number) {
     return degree * Math.PI / 180;
 }
 
@@ -113,7 +131,7 @@ export function getRandomColor() {
     return "hsl(" + hue + ",100%, 60%)";
 }
 
-export function getFake3dPoint(point, viewPoint, height) {
+export function getFake3dPoint(point: Point, viewPoint: Point, height: number) {
     const dir = normalize(subtract(point, viewPoint));
     const dist = distance(point, viewPoint);
     const scaler = Math.atan(dist / 300) / (Math.PI / 2);

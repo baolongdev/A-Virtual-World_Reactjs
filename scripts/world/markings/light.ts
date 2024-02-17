@@ -4,7 +4,7 @@ import { Marking } from "./marking";
 //! Done
 
 export class Light extends Marking {
-    constructor(center, directionVector, width, height) {
+    constructor(center, directionVector, width, height?) {
         super(center, directionVector, width, 18);
 
         this.state = "off";
