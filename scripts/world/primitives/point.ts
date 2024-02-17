@@ -1,12 +1,25 @@
+//! Done
 export class Point {
-    x: number;
-    y: number;
-    id: number;
+    x: number
+    y: number
+    id: number
+    prev: Point
+    cost: number
+    visited: boolean
 
-    constructor(x: number, y: number, id?: number) {
-        this.x = x;
-        this.y = y;
+    constructor(x: number, y: number, round = true, id?: number) {
+        if (round) {
+            this.x = Math.round(x);
+            this.y = Math.round(y);
+        } else {
+            this.x = x;
+            this.y = y;
+        }
         this.id = id;
+    }
+
+    hash() {
+        return Math.floor(this.x * 10000000 + this.y);
     }
 
     equals(point: Point) {
