@@ -56,8 +56,8 @@ export function cross(p1: Point, p2: Point) {
     return p1.x * p2.y - p1.y * p2.x;
 }
 
-export function add(p1: Point, p2: Point) {
-    return new Point(p1.x + p2.x, p1.y + p2.y);
+export function add(p1: Point, p2: Point, round = true) {
+    return new Point(p1.x + p2.x, p1.y + p2.y, round);
 }
 
 export function subtract(p1: Point, p2: Point) {

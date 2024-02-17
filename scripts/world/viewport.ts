@@ -1,19 +1,32 @@
-import { subtract, add, scale } from "./math/utils";
+import { subtract, add, scale, distance, lerp, lerp2D } from "./math/utils";
 import { Point } from "./primitives/point";
+// TODO Config
 
 export class Viewport {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
+    maxZoom: number;
     zoom: number;
     center: Point;
     offset: Point;
     drag: { start: Point, end: Point, offset: Point, active: boolean };
+    panButton: number
+    lerpSteps: number
+    lerpStep: number
+    zoomLerpSteps: number
+    zoomLerpStep: number
+    lerpZoomStart: number
+    lerpZoomMid: number
+    lerpZoomEnd: number
+    lerpStartPoint: Point
+    lerpEndPoint: Point
 
-    constructor(canvas: HTMLCanvasElement, zoom: number = 1, offset: Point = null) {
+    constructor(canvas: HTMLCanvasElement, zoom: number = 1, offset: Point = null, addPanListeners = true, addZoomListeners = true, panButton = 1) {
         this.canvas = canvas;
         this.ctx = this.canvas.getContext("2d");
 
-        this.zoom = zoom;
+        this.maxZoom = 2;
+        this.zoom = Math.min(zoom, this.maxZoom);;
         this.center = new Point(canvas.width / 2, canvas.height / 2);
         this.offset = offset ? offset : scale(this.center, -1);
 
@@ -23,11 +36,93 @@ export class Viewport {
             offset: new Point(0, 0),
             active: false,
         }
+        this.panButton = panButton;
 
-        this.addEventListeners();
+        //this.lerpPoints = [];
+        this.lerpSteps = 150;
+        this.lerpStep = this.lerpSteps;
+
+        this.zoomLerpSteps = 150;
+        this.zoomLerpStep = this.zoomLerpSteps;
+
+        if (addPanListeners) {
+            this.addPanEventListeners();
+        }
+        if (addZoomListeners) {
+            this.addZoomEventListeners();
+        }
+        // this.addEventListeners();
+    }
+
+    zoomInDoubleMax(steps = 20) {
+        //copy flyto and change a bit...
+        this.zoomTo(0.5, steps)
+    }
+
+    zoomIn(steps = 20) {
+        //copy flyto and change a bit...
+        this.zoomTo(1, steps)
+    }
+
+    zoomOut(steps = 20) {
+        //copy flyto and change a bit...
+        this.zoomTo(this.maxZoom, steps)
+    }
+
+    zoomTo(zoomVal, steps) {
+        this.lerpZoomStart = this.zoom;
+        this.zoomLerpStep = 0;
+        //const dist=distance(this.lerpStartPoint,scale(this.lerpEndPoint,-1));
+        this.zoomLerpSteps = steps;
+        this.lerpZoomEnd = zoomVal;
+    }
+
+    flyTo(endPoint, follow = false, zoomEnd = 1, minSteps = 5) {
+        this.lerpStartPoint = new Point(this.offset.x, this.offset.y);
+        this.lerpStartPoint.follow = follow ? endPoint : follow;
+        this.lerpEndPoint = endPoint;
+        this.lerpZoomStart = this.zoom;
+        this.lerpStep = 0;
+        const dist = distance(this.lerpStartPoint, scale(this.lerpEndPoint, -1));
+        this.lerpSteps = Math.max(minSteps, Math.floor((dist / 5) ** 0.6))
+        this.lerpZoomEnd = zoomEnd;
+        this.lerpZoomMid = Math.min(3, this.zoom + Math.floor(this.lerpSteps / 20));
+        if (follow == false) {
+            followBestCar = false;
+        }
+        if (!follow) {
+            followBtn.style.opacity = 1;
+        } else {
+            followBtn.style.opacity = 0;
+        }
     }
 
     reset() {
+        if (this.lerpStep < this.lerpSteps) {
+            this.lerpStep++
+            const t = this.lerpStep / this.lerpSteps;
+            const tt = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+            this.offset = lerp2D(this.lerpStartPoint, scale(this.lerpEndPoint, -1), tt)
+
+            this.zoom = t < 0.5
+                ? lerp(this.lerpZoomStart, this.lerpZoomMid, Math.abs(Math.sin(t * Math.PI)))
+                : lerp(this.lerpZoomMid, this.lerpZoomEnd, Math.abs(Math.sin((t + 0.5) * Math.PI)));
+
+            if (this.lerpStep == this.lerpSteps) {
+                followBestCar = this.lerpStartPoint.follow;
+            }
+        }
+        if (this.zoomLerpStep < this.zoomLerpSteps) {
+            this.zoomLerpStep++
+            const t = this.zoomLerpStep / this.zoomLerpSteps;
+            const tt = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+            //this.offset = lerp2D(this.lerpStartPoint, scale(this.lerpEndPoint,-1), tt)
+
+            this.zoom = lerp(this.lerpZoomStart, this.lerpZoomEnd, tt)
+            /*if(this.zoomLerpStep==this.zoomLerpSteps){
+               followBestCar=this.lerpStartPoint.follow;
+            }*/
+        }
         this.ctx.restore();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.save();
@@ -41,22 +136,30 @@ export class Viewport {
         const p = new Point(
             (evt.offsetX - this.center.x) * this.zoom - this.offset.x,
             (evt.offsetY - this.center.y) * this.zoom - this.offset.y,
+            false
         )
         return subtractDragOffset ? subtract(p, this.drag.offset) : p;
     }
 
     getOffset() {
-        return add(this.offset, this.drag.offset);
+        return add(this.offset, this.drag.offset, false);
     }
 
-    private addEventListeners() {
-        this.canvas.addEventListener('mousewheel', this.handleMouseWheel.bind(this))
+    private addPanEventListeners() {
         this.canvas.addEventListener('mousedown', this.handleMouseDown.bind(this))
         this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this))
         this.canvas.addEventListener('mouseup', this.handleMouseUp.bind(this))
     }
 
+    private addZoomEventListeners() {
+        this.canvas.addEventListener("mousewheel", this.handleMouseWheel.bind(this));
+    }
+
     private handleMouseDown(evt: MouseEvent) {
+        if (this.lerpStep < this.lerpSteps) {
+            return;
+        }
+        // this.panButton
         if (evt.button === 2 && evt.ctrlKey) { //! Ctrl + right button
             this.drag.start = this.getMouse(evt);
             this.drag.active = true;
@@ -64,13 +167,22 @@ export class Viewport {
     }
 
     private handleMouseMove(evt: MouseEvent) {
+        this.mouse = this.getMouse(evt);
+        if (this.lerpStep < this.lerpSteps) {
+            return;
+        }
         if (this.drag.active) {
             this.drag.end = this.getMouse(evt);
             this.drag.offset = subtract(this.drag.end, this.drag.start);
+            followBestCar = false;
+            followBtn.style.opacity = 1;
         }
     }
 
     private handleMouseUp(evt: MouseEvent) {
+        if (this.lerpStep < this.lerpSteps) {
+            return;
+        }
         if (this.drag.active) {
             this.offset = add(this.offset, this.drag.offset);
             this.drag = {
@@ -83,6 +195,9 @@ export class Viewport {
     }
 
     private handleMouseWheel(evt: WheelEvent) {
+        if (this.lerpStep < this.lerpSteps) {
+            return;
+        }
         const dir = Math.sign(evt.deltaY);
         const step = 0.1;
         this.zoom += dir * step;

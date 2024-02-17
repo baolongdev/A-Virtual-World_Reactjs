@@ -6,6 +6,7 @@ export class Point {
     prev: Point
     cost: number
     visited: boolean
+    follow: boolean
 
     constructor(x: number, y: number, round = true, id?: number) {
         if (round) {
