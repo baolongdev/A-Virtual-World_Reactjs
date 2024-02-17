@@ -7,6 +7,7 @@ import { Segment, Polygon } from ".";
 export class Envelope {
     skeleton: Segment
     poly: Polygon
+    layer
 
     constructor(skeleton?: Segment, width?: number, roundness = 1) {
         if (skeleton) {
