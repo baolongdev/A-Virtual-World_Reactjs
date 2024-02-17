@@ -29,3 +29,5 @@ type wayOsm = {
     tags: tagOsm
     type: string
 }
+
+type seasonProp = "winter" | "autumn";

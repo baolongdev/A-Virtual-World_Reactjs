@@ -3,7 +3,7 @@ import { Point } from "../primitives";
 import { Viewport } from "../viewport";
 import { World } from "..";
 import { MarkingEditor } from "./markingEditor";
-
+//! Done
 
 export class StartEditor extends MarkingEditor {
     constructor(viewport: Viewport, world: World) {

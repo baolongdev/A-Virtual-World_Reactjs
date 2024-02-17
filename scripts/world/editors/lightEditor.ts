@@ -1,7 +1,6 @@
 import { Light } from "../markings";
 import { MarkingEditor } from "./markingEditor";
-
-
+//! Done
 
 export class LightEditor extends MarkingEditor {
     constructor(viewport, world) {

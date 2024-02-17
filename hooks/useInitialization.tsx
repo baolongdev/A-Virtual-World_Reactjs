@@ -152,9 +152,9 @@ export const useInitialization = () => {
             world.draw(carCtx, viewPoint, false);
             miniMap.update(viewPoint);
 
-            for (const tool of Object.values(tools)) {
-                tool.editor.display();
-            }
+            // for (const tool of Object.values(tools)) {
+            //     tool.editor.display();
+            // }
 
             for (let i = 0; i < traffic.length; i++) {
                 traffic[i].draw(carCtx);

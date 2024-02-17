@@ -1,6 +1,8 @@
 import { Graph, getNearestPoint } from "../math";
 import { Point, Segment } from "../primitives";
 import { Viewport } from "../viewport";
+//? Not
+
 
 export class GraphEditor {
     viewport: Viewport;
