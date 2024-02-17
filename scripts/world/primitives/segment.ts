@@ -1,16 +1,19 @@
 import { add, distance, dot, magnitude, normalize, scale, subtract } from "../math/utils";
 import { Point } from "./point";
-
+//! Done
 
 export class Segment {
     p1: Point;
     p2: Point;
     oneWay: boolean;
+    layer: number
+    red
 
-    constructor(p1: Point, p2: Point, oneWay = false) {
+    constructor(p1: Point, p2: Point, oneWay = false, layer = null) {
         this.p1 = p1;
         this.p2 = p2;
         this.oneWay = oneWay
+        this.layer = layer;
     }
 
     length() {
@@ -19,6 +22,13 @@ export class Segment {
 
     directionVector() {
         return normalize(subtract(this.p2, this.p1));
+    }
+
+    connectedTo(seg: Segment) {
+        if (seg.includes(this.p1) || seg.includes(this.p2)) {
+            return true;
+        }
+        return false;
     }
 
     equals(seg: Segment) {
@@ -58,6 +68,9 @@ export class Segment {
         ctx.lineCap = cap;
         if (this.oneWay) {
             dash = [4, 4];
+        }
+        if (this.red) {
+            ctx.strokeStyle = "red";
         }
         ctx.setLineDash(dash);
         ctx.moveTo(this.p1.x, this.p1.y);

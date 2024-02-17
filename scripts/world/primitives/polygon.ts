@@ -1,6 +1,7 @@
 import { getIntersection, average, getRandomColor, dot, normalize, subtract } from "../math/utils";
 import { Point } from "./point";
 import { Segment } from "./segment";
+//! Done
 
 export class Polygon {
     points: Point[]
