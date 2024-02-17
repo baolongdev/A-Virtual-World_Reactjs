@@ -1,6 +1,7 @@
 import { perpendicular, add, scale } from "../math";
 import { Point, Segment } from "../primitives";
 import { Marking } from "./marking";
+//! Done
 
 export class Crossing extends Marking {
     constructor(center: Point, directionVector: Point, width: number, height: number) {
@@ -15,6 +16,10 @@ export class Crossing extends Marking {
             add(this.center, scale(perp, this.width / 2)),
             add(this.center, scale(perp, -this.width / 2))
         )
-        line.draw(ctx, { width: this.height, color: 'white', dash: [11, 11] });
+        line.draw(ctx, {
+            width: this.height,
+            color: 'white',
+            dash: [11, 11]
+        });
     }
 }

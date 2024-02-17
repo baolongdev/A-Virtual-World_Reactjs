@@ -1,6 +1,7 @@
 import { perpendicular, add, scale, lerp2D } from "../math";
 import { Segment } from "../primitives";
 import { Marking } from "./marking";
+//! Done
 
 export class Light extends Marking {
     constructor(center, directionVector, width, height) {

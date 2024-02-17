@@ -1,6 +1,7 @@
 import { angle } from "../math";
 import { Point } from "../primitives";
 import { Marking } from "./marking";
+//! Done
 
 export class Stop extends Marking {
     constructor(center: Point, directionVector: Point, width: number, height: number) {

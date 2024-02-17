@@ -1,3 +1,3 @@
-export * from './building'
-export * from './tree'
-export * from './water'
+export * from './building' // TODO Config chua xong
+export * from './tree' //! Done
+export * from './water' //! Done
