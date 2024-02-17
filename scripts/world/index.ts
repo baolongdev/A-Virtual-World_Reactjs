@@ -1,5 +1,7 @@
 export * from './viewport'
 export * from './world'
+export * from './grid'
+export * from './miniMap'
 export * from './editors'
 export * from './item'
 export * from './markings'

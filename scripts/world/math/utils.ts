@@ -39,7 +39,7 @@ export function getNearestSegments(loc: Point, segments: Segment[], threshold = 
     return nearest;
 }
 
-export function distance(p1: Point, p2: Point) {
+export function distance(p1: Point, p2: any | Point) {
     return Math.hypot(p1.x - p2.x, p1.y - p2.y);
 }
 
@@ -60,7 +60,7 @@ export function add(p1: Point, p2: Point, round = true) {
     return new Point(p1.x + p2.x, p1.y + p2.y, round);
 }
 
-export function subtract(p1: Point, p2: Point) {
+export function subtract(p1: any | Point, p2: Point) {
     return new Point(p1.x - p2.x, p1.y - p2.y);
 }
 

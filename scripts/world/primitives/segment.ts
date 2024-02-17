@@ -8,6 +8,11 @@ export class Segment {
     oneWay: boolean;
     layer: number
     red
+    indices: number[];
+    levelIndex: any;
+    value: any;
+    weight: any;
+    marked: any;
 
     constructor(p1: Point, p2: Point, oneWay = false, layer = null) {
         this.p1 = p1;

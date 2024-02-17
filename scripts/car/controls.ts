@@ -1,10 +1,9 @@
 export class Controls {
-    forward: boolean
-    left: boolean
-    right: boolean
-    reverse: boolean
-
-    constructor(type: string) {
+    forward: boolean;
+    left: boolean;
+    right: boolean;
+    reverse: boolean;
+    constructor(type) {
         this.forward = false;
         this.left = false;
         this.right = false;
@@ -12,6 +11,9 @@ export class Controls {
 
         switch (type) {
             case "KEYS":
+                this.addKeyboardListeners();
+                break;
+            case "AI":
                 this.addKeyboardListeners();
                 break;
             case "DUMMY":
@@ -22,6 +24,9 @@ export class Controls {
 
     private addKeyboardListeners() {
         document.onkeydown = (event) => {
+            // if (!manual) {
+            //     return;
+            // }
             switch (event.key) {
                 case "ArrowLeft":
                     this.left = true;
@@ -36,8 +41,11 @@ export class Controls {
                     this.reverse = true;
                     break;
             }
-        }
+        };
         document.onkeyup = (event) => {
+            // if (!manual) {
+            //     return;
+            // }
             switch (event.key) {
                 case "ArrowLeft":
                     this.left = false;
@@ -52,6 +60,6 @@ export class Controls {
                     this.reverse = false;
                     break;
             }
-        }
+        };
     }
 }

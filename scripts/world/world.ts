@@ -722,16 +722,19 @@ export class World {
         }
     }
 
-    draw(ctx: CanvasRenderingContext2D, viewPoint: Point, showStartMarkings = true, renderRadius = 1000,
-        season: seasonProp,
-        activeRegion,
+    draw(ctx: CanvasRenderingContext2D, viewPoint: Point,
+        activeRegion?,
+        season: seasonProp = "autumn",
+        showStartMarkings = true,
+        renderRadius = 1000,
         optimizing = false,
-        useGrid = true
+        useGrid = true,
+        showGrid = true
     ) {
         this.updateLights();
 
         if (this.water) {
-            this.water.draw(ctx);
+            this.water.draw(ctx, season);
         }
         //ctx.globalAlpha=0.5;
         //ctx.globalAlpha=0.5;

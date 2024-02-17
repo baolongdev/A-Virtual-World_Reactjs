@@ -7,6 +7,15 @@ export class Point {
     cost: number
     visited: boolean
     follow: boolean
+    index: number
+    value: any
+    levelIndex: any
+    inputNode: boolean
+    bias: any
+    outputNode: any
+    label: any
+    marked: any
+    view: any
 
     constructor(x: number, y: number, round = true, id?: number) {
         if (round) {

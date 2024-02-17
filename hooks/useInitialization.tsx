@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Car, CrossingEditor, Graph, GraphEditor, LightEditor, NeuralNetwork, Osm, ParkingEditor, Point, Sensor, Start, StartEditor, StopEditor, TargetEditor, Viewport, Visualizer, World, YieldEditor, angle, scale } from "../scripts";
+import { Car, CrossingEditor, Graph, GraphEditor, LightEditor, NeuralNetwork, Osm, ParkingEditor, Point, Polygon, Sensor, Start, StartEditor, StopEditor, TargetEditor, Viewport, World, YieldEditor, angle, scale } from "../scripts";
 import { useDisclosure } from "@nextui-org/react";
 import { MiniMap } from "../scripts/world/miniMap";
 // import 
@@ -90,7 +90,7 @@ export const useInitialization = () => {
         const miniMap = new MiniMap(miniMapCanvas, world.graph, 300);
 
         const tools = {
-            graph: { id: "graphBtn", title: "🌐", editor: new GraphEditor(viewport, graph) },
+            graph: { id: "graphBtn", title: "🌐", editor: new GraphEditor(viewport, graph, world) },
             stop: { id: "stopBtn", title: "🛑", editor: new StopEditor(viewport, world) },
             crossing: { id: "crossingBtn", title: "🚶", editor: new CrossingEditor(viewport, world) },
             start: { id: "startBtn", title: "🚙", editor: new StartEditor(viewport, world) },
@@ -149,8 +149,8 @@ export const useInitialization = () => {
                 oldGraphHash = graph.hash();
             }
             const viewPoint = scale(viewport.getOffset(), -1);
-            world.draw(carCtx, viewPoint, false);
-            miniMap.update(viewPoint);
+            // world.draw(carCtx, viewPoint);
+            // miniMap.update(viewport, viewPoint, bestCar, cars);
 
             // for (const tool of Object.values(tools)) {
             //     tool.editor.display();
@@ -162,7 +162,7 @@ export const useInitialization = () => {
 
             networkCtx.lineDashOffset = -time / 50;
             networkCtx.clearRect(0, 0, networkCanvas.width, networkCanvas.height);
-            Visualizer.drawNetwork(networkCtx, bestCar.brain);
+            // Visualizer.drawNetwork(networkCtx, bestCar.brain);
             requestAnimationFrame(animate);
         }
     }, [])
@@ -179,10 +179,53 @@ export const useInitialization = () => {
 
         const cars = [];
         for (let i = 1; i <= N; i++) {
-            cars.push(new Car(startPoint.x, startPoint.y, 30, 50, "AI", startAngle));
+            cars.push(new Car(startPoint.x, startPoint.y, startAngle, {
+                color: "red"
+            }
+            ));
         }
         return cars;
     }
+
+
+    const handleEasterEggs = (car) => {
+        if (car.state == "helicopter") {
+            return;
+        }
+        const carPoly = new Polygon(car.polygon)
+        let insideWater = false;
+        for (const p of world.water.polys) {
+            if (p.containsPoly(carPoly)) {
+                insideWater = true;
+            }
+        }
+        for (const p of world.water.innerPolys) {
+            if (p.containsPoly(carPoly)) {
+                insideWater = false;
+            }
+        }
+        if (insideWater) {
+            if (car.borderDamaged) {
+                if (car.state == "car") {
+                    car.state = "helicopter";
+                    car.maxSpeed = 10;
+                    car.increaseSize();
+                    return;
+                }
+            }
+            if (!car.onRoad) {
+                if (car.state == "car") {
+                    car.state = "boat";
+                }
+            }
+        } else {
+            if (car.state == "boat") {
+                car.state = "car";
+            }
+        }
+
+    }
+
     return {
         carCanvasRef,
         networkCanvasRef,
