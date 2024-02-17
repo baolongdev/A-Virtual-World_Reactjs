@@ -2,7 +2,7 @@
 
 import { angle, subtract, translate } from "../math/utils";
 import { Segment, Polygon } from ".";
-
+//! Done
 
 export class Envelope {
     skeleton: Segment
@@ -17,8 +17,12 @@ export class Envelope {
 
     static load(info: Envelope) {
         const env = new Envelope();
-        env.skeleton = new Segment(info.skeleton.p1, info.skeleton.p2);
+        env.skeleton = new Segment(
+            info.skeleton.p1,
+            info.skeleton.p2
+        );
         env.poly = Polygon.load(info.poly);
+        env.layer = info.layer;
         return env;
     }
 
