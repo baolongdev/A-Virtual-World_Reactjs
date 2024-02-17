@@ -1,6 +1,7 @@
 import { Graph, getNearestPoint } from "../math";
 import { Point, Segment } from "../primitives";
 import { Viewport } from "../viewport";
+import { World } from "../world";
 //? Not
 
 
@@ -8,18 +9,21 @@ export class GraphEditor {
     viewport: Viewport;
     canvas: HTMLCanvasElement;
     graph: Graph;
+    world: World;
     ctx: CanvasRenderingContext2D;
     selected: Point;
     hovered: Point;
     dragging: boolean;
     mouse: Point;
+    specialEdit: boolean
+    radius: number
 
     boundMouseDown: (evt: MouseEvent) => void;
     boundMouseMove: (evt: MouseEvent) => void;
     boundMouseUp: () => void;
     boundMouseContextMenu: (evt: MouseEvent) => void;
 
-    constructor(viewport: Viewport, graph: Graph) {
+    constructor(viewport: Viewport, graph: Graph, world: World) {
         this.viewport = viewport;
         this.canvas = viewport.canvas;
         this.graph = graph;
@@ -30,6 +34,9 @@ export class GraphEditor {
         this.hovered = null;
         this.dragging = false;
         this.mouse = null;
+
+        this.specialEdit = true;
+        this.radius = 20;
     }
 
     enable() {
@@ -49,7 +56,6 @@ export class GraphEditor {
         this.boundMouseUp = () => this.dragging = false;
         this.boundMouseContextMenu = (evt) => evt.preventDefault();
 
-
         this.canvas.addEventListener('mousedown', this.boundMouseDown)
         this.canvas.addEventListener('mousemove', this.boundMouseMove)
         this.canvas.addEventListener("mouseup", this.boundMouseUp)
@@ -65,10 +71,60 @@ export class GraphEditor {
 
     private handleMouseMove(evt: MouseEvent) {
         this.mouse = this.viewport.getMouse(evt, true);
+        if (this.specialEdit) {
+
+            /*
+            for(const b of world.buildings){
+               if(b.base.distanceToPoint(this.mouse)<this.radius){
+                  console.log(b.id);
+               }
+            }
+            */
+
+
+            for (let i = 0; i < this.world.roadBorders.length; i++) {
+                const seg = this.world.roadBorders[i];
+                if (seg.distanceToPoint(this.mouse) < this.radius) {
+                    seg.red = true;
+                } else {
+                    seg.red = false;
+                }
+                //console.log(seg);
+            }
+
+            return;
+            /*
+            for(let i=0;i<world.layer0.length;i++){
+               const seg=world.layer0[i];
+               if(seg.distanceToPoint(this.mouse)<this.radius){
+                  seg.red=true;
+               }else{
+                  seg.red=false;
+               }
+            }
+            for(let i=0;i<world.layer1.length;i++){
+               const seg=world.layer1[i];
+               if(seg.distanceToPoint(this.mouse)<this.radius){
+                  seg.red=true;
+               }else{
+                  seg.red=false;
+               }
+            }*/
+        }
         this.hovered = getNearestPoint(this.mouse, this.graph.points, 10 * this.viewport.zoom);
         if (this.dragging == true) {
             this.selected.x = this.mouse.x;
             this.selected.y = this.mouse.y;
+        }
+
+        let minDist = Number.MAX_SAFE_INTEGER;
+        let nearest = null;
+        for (const b of this.world.buildings) {
+            const d = b.base.distanceToPoint(this.mouse);
+            if (d < minDist) {
+                minDist = d;
+                nearest = b;
+            }
         }
     }
 
@@ -78,6 +134,62 @@ export class GraphEditor {
                 this.selected = null;
             } else if (this.hovered) {
                 this.removePoint(this.hovered);
+            }
+            if (this.specialEdit) {
+                /*for(const seg of this.graph.segments){
+                   if(seg.distanceToPoint(this.mouse)<this.radius){
+                      seg.layer=null;
+                   }
+                }
+                */
+
+                for (let i = 0; i < this.world.roadBorders.length; i++) {
+                    const seg = this.world.roadBorders[i];
+                    if (seg.distanceToPoint(this.mouse) < this.radius) {
+                        this.world.roadBorders.splice(i, 1);
+                        i--;
+                    }
+                }
+
+                return;
+
+                /*
+                            for(let i=0;i<world.trees.length;i++){
+                               const t=world.trees[i];
+                               if(t.base.distanceToPoint(this.mouse)<this.radius){
+                                  world.trees.splice(i,1);
+                                  i--;
+                               }
+                            }
+                            return;*/
+                /*
+                for (let i = 0; i < this.graph.points.length; i++) {
+                   if (distance(this.graph.points[i], this.mouse) < this.radius) {
+                      console.log("!");
+                      this.#removePoint(this.graph.points[i]);
+                      i--;
+                   }
+                }
+    */
+
+                /*
+                            for (let i = 0; i < world.buildings.length; i++) {
+                               if (
+                                  world.buildings[i].base.distanceToPoint(this.mouse) <
+                                  this.radius
+                               ) {
+                                  world.buildings.splice(i, 1);
+                                  i--;
+                               }
+                            }
+                            for (let i = 0; i < world.trees.length; i++) {
+                               if (
+                                  world.trees[i].base.distanceToPoint(this.mouse) < this.radius
+                               ) {
+                                  world.trees.splice(i, 1);
+                                  i--;
+                               }
+                            }*/
             }
         }
         if (evt.button == 0) { // left click
@@ -122,6 +234,11 @@ export class GraphEditor {
             const intent = this.hovered ? this.hovered : this.mouse;
             new Segment(this.selected, intent).draw(this.ctx, { dash: [3, 3] });
             this.selected.draw(this.ctx, { outline: true });
+        }
+        if (this.specialEdit) {
+            if (this.mouse) {
+                this.mouse.draw(this.ctx, { size: this.radius * 2 });
+            }
         }
     }
 }

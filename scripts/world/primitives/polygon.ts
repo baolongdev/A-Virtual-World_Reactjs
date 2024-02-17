@@ -7,6 +7,18 @@ export class Polygon {
     points: Point[]
     segments: Segment[]
     id: number
+    base: Polygon | Segment
+    floorPlan: HTMLImageElement
+    floorPlanOffset: Point
+    floorPlanLoc: Point
+    floorPlanSize: number
+    img: HTMLImageElement
+    imgLoc: Point
+    imgSize: number
+    imgOffset: Point
+    imgScaler: number
+    dark: boolean
+
 
     constructor(points: Point[]) {
         this.points = points

@@ -28,7 +28,7 @@ export function getNearestSegment(loc: Point, segments: Segment[], threshold = N
 }
 
 export function getNearestSegments(loc: Point, segments: Segment[], threshold = Number.MAX_SAFE_INTEGER) {
-    let nearest = [];
+    let nearest: Segment[] = [];
     for (const seg of segments) {
         const dist = seg.distanceToPoint(loc);
         if (dist < threshold) {

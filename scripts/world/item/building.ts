@@ -1,4 +1,4 @@
-import { getFake3dPoint, average } from "../math";
+import { getFake3dPoint, average, add } from "../math";
 import { Point, Polygon } from "../primitives";
 // TODO Config chua xong
 export class Building {
@@ -10,7 +10,7 @@ export class Building {
     img: HTMLImageElement
     floorPlan: HTMLImageElement
     floorPlanScaler: number
-    floorPlanOffset: number
+    floorPlanOffset: Point
 
     constructor(poly: Polygon, height = 200) {
         this.base = poly;
@@ -23,9 +23,8 @@ export class Building {
         this.floorPlan = null
         this.floorPlanScaler = null
         this.floorPlanOffset = null
-
-
     }
+
     static load(info: Building, index) {
         const b = new Building(Polygon.load(info.base), info.height);
         if (info.id) {
@@ -61,14 +60,14 @@ export class Building {
         return b;
     }
 
-    update(viewPoint) {
+    update(viewPoint: Point) {
         const topPoints = this.base.points.map((p) =>
             getFake3dPoint(p, viewPoint, this.height * 0.6)
         );
         const ceiling = new Polygon(topPoints);
         ceiling.base = this.base;
 
-        const sides = [];
+        const sides: Polygon[] = [];
         for (let i = 0; i < this.base.points.length; i++) {
             const nextI = (i + 1) % this.base.points.length;
             const poly = new Polygon([
@@ -119,7 +118,7 @@ export class Building {
             ceiling.imgSize = rad * 2 * ceiling.imgScaler;
         }
 
-        let roofPolys = [];
+        let roofPolys: Polygon[] = [];
         if (this.base.points.length == 4 || this.base.points.length == 5) {
             ceiling.dark = true;
 

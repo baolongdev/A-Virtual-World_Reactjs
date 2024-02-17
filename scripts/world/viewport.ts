@@ -20,6 +20,7 @@ export class Viewport {
     lerpZoomEnd: number
     lerpStartPoint: Point
     lerpEndPoint: Point
+    mouse: Point
 
     constructor(canvas: HTMLCanvasElement, zoom: number = 1, offset: Point = null, addPanListeners = true, addZoomListeners = true, panButton = 1) {
         this.canvas = canvas;
